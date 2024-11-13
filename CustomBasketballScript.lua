@@ -8,7 +8,7 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 
-ScreenGui.Name = "SimpleGUI"
+ScreenGui.Name = "MyCustomGUI"  -- Give a unique name to prevent conflicts
 ScreenGui.Parent = game.CoreGui
 
 Frame.Parent = ScreenGui
@@ -36,68 +36,6 @@ TextButton.BackgroundTransparency = 1
 
 UICornerButton.CornerRadius = UDim.new(0, 15)
 UICornerButton.Parent = TextButton
-
-local function playOpenAnimation()
-    local tweenInfo = TweenInfo.new(
-        1.5,
-        Enum.EasingStyle.Quad,
-        Enum.EasingDirection.Out,
-        0,
-        false,
-        0
-    )
-
-    local frameGoals = {
-        Size = UDim2.new(0.15, 0, 0.15, 0),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        BackgroundTransparency = 0
-    }
-
-    local textButtonGoals = {
-        TextSize = 24,
-        BackgroundTransparency = 0
-    }
-
-    local frameTween = TweenService:Create(Frame, tweenInfo, frameGoals)
-    local textButtonTween = TweenService:Create(TextButton, tweenInfo, textButtonGoals)
-
-    frameTween:Play()
-    textButtonTween:Play()
-end
-
-playOpenAnimation()
-
-local function closeGUI()
-    local tweenInfo = TweenInfo.new(
-        0.5,
-        Enum.EasingStyle.Quad,
-        Enum.EasingDirection.Out,
-        0,
-        false,
-        0
-    )
-    
-    local frameGoals = {
-        Size = UDim2.new(0, 0, 0, 0),
-        BackgroundTransparency = 1
-    }
-
-    local textButtonGoals = {
-        TextSize = 0,
-        BackgroundTransparency = 1
-    }
-    
-    local frameTween = TweenService:Create(Frame, tweenInfo, frameGoals)
-    local textButtonTween = TweenService:Create(TextButton, tweenInfo, textButtonGoals)
-    
-    frameTween:Play()
-    textButtonTween:Play()
-    
-    frameTween.Completed:Connect(function()
-        wait(2)  -- Add a 2-second delay before destroying the GUI
-        ScreenGui:Destroy()  -- Completely remove the GUI from the screen
-    end)
-end
 
 local function sendNotification(message)
     local StarterGui = game:GetService("StarterGui")
@@ -140,10 +78,24 @@ local function runScripts()
     sendNotification("Auto Green Enabled & Auto Guard")
 end
 
--- Load script, then close GUI after a delay
+-- Directly destroy GUI without animation and add debugging prints
+local function closeGUI()
+    print("Attempting to close GUI...") -- Debugging print
+    if ScreenGui then
+        print("ScreenGui found, destroying it now.") -- Debugging print
+        ScreenGui:Destroy()  -- Directly remove the GUI from CoreGui
+        print("ScreenGui destroyed.") -- Confirming print
+    else
+        print("ScreenGui not found!") -- Debugging print if it fails to locate
+    end
+end
+
+-- Load script, then immediately close GUI
 TextButton.MouseButton1Click:Connect(function()
-    runScripts() -- Run the main script immediately
-    closeGUI()   -- Then close the GUI with a 2-second delay
-    print("Done Loading")
+    print("Load Script button clicked.") -- Debugging print
+    runScripts()  -- Run the main script
+    closeGUI()    -- Directly destroy the GUI after running the script
+    print("Done Loading") -- Final confirmation print
 end)
+
 
