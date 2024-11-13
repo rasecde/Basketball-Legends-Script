@@ -1,4 +1,3 @@
--- Original setup
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local TextButton = Instance.new("TextButton")
@@ -6,8 +5,8 @@ local UICornerFrame = Instance.new("UICorner")
 local UICornerButton = Instance.new("UICorner")
 local UIStrokeFrame = Instance.new("UIStroke")
 local TweenService = game:GetService("TweenService")
-local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
 
 ScreenGui.Name = "SimpleGUI"
 ScreenGui.Parent = game.CoreGui
@@ -95,7 +94,7 @@ local function closeGUI(callback)
     textButtonTween:Play()
     
     frameTween.Completed:Connect(function()
-        ScreenGui:Destroy()
+        ScreenGui.Enabled = false  -- Hide the GUI instead of destroying it
         if callback then callback() end
     end)
 end
@@ -110,59 +109,39 @@ local function sendNotification(message)
     })
 end
 
--- Function to handle the shooting action, both for key press and button click
-local function shoot()
-    print("Shoot button pressed") -- Debugging line
-    local Player = Players.LocalPlayer
-    local Bar = Player.PlayerGui:FindFirstChild("Visual") and Player.PlayerGui.Visual:FindFirstChild("Shooting") and Player.PlayerGui.Visual.Shooting:FindFirstChild("Bar")
-    
-    if Bar and Player.Character:FindFirstChild("Basketball") then
-        print("Basketball found and shooting logic triggered") -- Debugging line
-        Bar:GetPropertyChangedSignal("Size"):Connect(function()
-            if Bar.Size.Y.Scale > getgenv().config.Size then
-                Bar:TweenSize(UDim2.new(1, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, getgenv().config.Time, true)
-                task.wait()
-                Bar.Size = UDim2.new(1, 0, 1, 0)
-            end
-        end)
-    else
-        print("Bar or Basketball not found") -- Debugging line
-    end
-end
-
-
--- Modified runScripts function that includes key binding for 'V' and setting up the ShootButton
 local function runScripts()
     _G.OBFHUBFREE = "2kmembersgang"
     loadstring(game:HttpGet("https://raw.githubusercontent.com/obfhub/free/main/basketmball"))()
+
     getgenv().config = {Time = 0.045, Size = 0.9} 
 
-    -- Bind the 'V' key to the shoot function
-    UserInputService.InputBegan:Connect(function(input, gpe)
-        if gpe then return end
-        if input.KeyCode == Enum.KeyCode.V then
-            shoot()
-        end
+    local UIS = game:GetService("UserInputService") 
+    local Player = Players.LocalPlayer 
+    local Bar = Player.PlayerGui.Visual.Shooting.Bar 
+
+    UIS.InputBegan:Connect(function(input, gpe) 
+        if gpe then return end 
+        if input.KeyCode == Enum.KeyCode.E then 
+            if Player.Character:FindFirstChild("Basketball") then 
+                while UIS:IsKeyDown(Enum.KeyCode.E) do 
+                    Bar:GetPropertyChangedSignal("Size"):Connect(function() 
+                        if Bar.Size.Y.Scale > getgenv().config.Size then 
+                            Bar:TweenSize(UDim2.new(1, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, getgenv().config.Time, true) 
+                            task.wait() 
+                            Bar.Size = UDim2.new(1, 0, 1, 0) 
+                        end 
+                    end) 
+                    task.wait() 
+                end 
+            end 
+        end 
     end)
 
     sendNotification("Auto Green Enabled & Auto Guard")
 end
 
--- Connect the "Load Script" button to load the main script and hide the initial GUI
 TextButton.MouseButton1Click:Connect(function()
     closeGUI(runScripts)
     print("Done Loading")
 end)
 
--- Creating the "Shoot" button for mobile use
-local ShootButton = Instance.new("TextButton")
-ShootButton.Parent = ScreenGui
-ShootButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-ShootButton.Size = UDim2.new(0, 100, 0, 50)  -- Adjust size as needed
-ShootButton.Position = UDim2.new(0.8, 0, 0.8, 0)  -- Adjust position as needed
-ShootButton.Text = "Shoot"
-ShootButton.TextSize = 24
-ShootButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-
--- Connect the ShootButton to the shoot function
-ShootButton.MouseButton1Click:Connect(shoot)
