@@ -5,7 +5,6 @@ local UICornerFrame = Instance.new("UICorner")
 local UICornerButton = Instance.new("UICorner")
 local UIStrokeFrame = Instance.new("UIStroke")
 local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 
 ScreenGui.Name = "SimpleGUI"
@@ -51,7 +50,6 @@ local function playOpenAnimation()
         Size = UDim2.new(0.15, 0, 0.15, 0),
         Position = UDim2.new(0.5, 0, 0.5, 0),
         BackgroundTransparency = 0
-
     }
 
     local textButtonGoals = {
@@ -110,37 +108,32 @@ local function sendNotification(message)
     })
 end
 
+-- The original runScripts function that loads the main script and sets up the config
 local function runScripts()
-
     _G.OBFHUBFREE = "2kmembersgang"
     loadstring(game:HttpGet("https://raw.githubusercontent.com/obfhub/free/main/basketmball"))()
 
     getgenv().config = {Time = 0.045, Size = 0.9} 
 
-    local UIS = game:GetService("UserInputService") 
-    local Player = Players.LocalPlayer 
-    local Bar = Player.PlayerGui.Visual.Shooting.Bar 
-
-    UIS.InputBegan:Connect(function(input, gpe) 
-        if gpe then return end 
-        if input.KeyCode == Enum.KeyCode.E then 
-            if Player.Character:FindFirstChild("Basketball") then 
-                while UIS:IsKeyDown(Enum.KeyCode.E) do 
-                    Bar:GetPropertyChangedSignal("Size"):Connect(function() 
-                        if Bar.Size.Y.Scale > getgenv().config.Size then 
-                            Bar:TweenSize(UDim2.new(1, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, getgenv().config.Time, true) 
-                            task.wait() 
-                            Bar.Size = UDim2.new(1, 0, 1, 0) 
-                        end 
-                    end) 
-                    task.wait() 
-                end 
-            end 
-        end 
-    end)
-
     sendNotification("Auto Green Enabled & Auto Guard")
 end
 
+-- Call runScripts after closing the GUI
 TextButton.MouseButton1Click:Connect(function()
     closeGUI(runScripts)
+    print("Done Loading")
+end)
+
+-- Adding a "Shoot" button for mobile users to trigger the shooting action
+local ShootButton = Instance.new("TextButton")
+ShootButton.Parent = ScreenGui
+ShootButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+ShootButton.Size = UDim2.new(0, 100, 0, 50)  -- Adjust size if needed
+ShootButton.Position = UDim2.new(0.8, 0, 0.8, 0)  -- Adjust position if needed
+ShootButton.Text = "Shoot"
+ShootButton.TextSize = 24
+ShootButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+-- Function to simulate shooting when ShootButton is pressed
+local function shoot()
+    local 
