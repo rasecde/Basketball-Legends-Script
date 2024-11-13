@@ -122,7 +122,7 @@ end
 TextButton.MouseButton1Click:Connect(function()
     closeGUI(runScripts)
     print("Done Loading")
-end)
+end)  -- Make sure this closing end) is here
 
 -- Adding a "Shoot" button for mobile users to trigger the shooting action
 local ShootButton = Instance.new("TextButton")
@@ -136,4 +136,19 @@ ShootButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 
 -- Function to simulate shooting when ShootButton is pressed
 local function shoot()
-    local 
+    local Player = Players.LocalPlayer
+    local Bar = Player.PlayerGui:FindFirstChild("Visual") and Player.PlayerGui.Visual:FindFirstChild("Shooting") and Player.PlayerGui.Visual.Shooting:FindFirstChild("Bar")
+    
+    if Bar and Player.Character:FindFirstChild("Basketball") then
+        Bar:GetPropertyChangedSignal("Size"):Connect(function()
+            if Bar.Size.Y.Scale > getgenv().config.Size then
+                Bar:TweenSize(UDim2.new(1, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, getgenv().config.Time, true)
+                task.wait()
+                Bar.Size = UDim2.new(1, 0, 1, 0)
+            end
+        end)
+    end
+end
+
+-- Connect the ShootButton to the shoot function
+ShootButton.MouseButton1Click:Connect(shoot)
