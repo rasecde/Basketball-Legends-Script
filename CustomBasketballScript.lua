@@ -94,7 +94,10 @@ local function closeGUI(callback)
     textButtonTween:Play()
     
     frameTween.Completed:Connect(function()
-        ScreenGui.Enabled = false  -- Hide the GUI instead of destroying it
+        -- Clear all components from the screen
+        if ScreenGui then
+            ScreenGui:Destroy()
+        end
         if callback then callback() end
     end)
 end
@@ -144,3 +147,4 @@ TextButton.MouseButton1Click:Connect(function()
     closeGUI(runScripts)
     print("Done Loading")
 end)
+
