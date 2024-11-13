@@ -67,7 +67,7 @@ end
 
 playOpenAnimation()
 
-local function closeGUI(callback)
+local function closeGUI()
     local tweenInfo = TweenInfo.new(
         0.5,
         Enum.EasingStyle.Quad,
@@ -98,7 +98,6 @@ local function closeGUI(callback)
         if ScreenGui then
             ScreenGui:Destroy()
         end
-        if callback then callback() end
     end)
 end
 
@@ -143,8 +142,11 @@ local function runScripts()
     sendNotification("Auto Green Enabled & Auto Guard")
 end
 
+-- Load script and then clear the GUI
 TextButton.MouseButton1Click:Connect(function()
-    closeGUI(runScripts)
+    runScripts() -- Run the scripts first
+    closeGUI()   -- Clear the screen after running the scripts
     print("Done Loading")
 end)
+
 
