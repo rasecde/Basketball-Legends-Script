@@ -84,4 +84,3 @@ TextButton.MouseButton1Click:Connect(function()
     ScreenGui:Destroy() -- Immediately remove the GUI from the screen
     print("Done Loading")
 end)
-
