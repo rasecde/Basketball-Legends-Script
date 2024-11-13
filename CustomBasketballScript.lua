@@ -37,6 +37,68 @@ TextButton.BackgroundTransparency = 1
 UICornerButton.CornerRadius = UDim.new(0, 15)
 UICornerButton.Parent = TextButton
 
+local function playOpenAnimation()
+    local tweenInfo = TweenInfo.new(
+        1.5,
+        Enum.EasingStyle.Quad,
+        Enum.EasingDirection.Out,
+        0,
+        false,
+        0
+    )
+
+    local frameGoals = {
+        Size = UDim2.new(0.15, 0, 0.15, 0),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        BackgroundTransparency = 0
+    }
+
+    local textButtonGoals = {
+        TextSize = 24,
+        BackgroundTransparency = 0
+    }
+
+    local frameTween = TweenService:Create(Frame, tweenInfo, frameGoals)
+    local textButtonTween = TweenService:Create(TextButton, tweenInfo, textButtonGoals)
+
+    frameTween:Play()
+    textButtonTween:Play()
+end
+
+playOpenAnimation()
+
+local function closeGUI()
+    local tweenInfo = TweenInfo.new(
+        0.5,
+        Enum.EasingStyle.Quad,
+        Enum.EasingDirection.Out,
+        0,
+        false,
+        0
+    )
+    
+    local frameGoals = {
+        Size = UDim2.new(0, 0, 0, 0),
+        BackgroundTransparency = 1
+    }
+
+    local textButtonGoals = {
+        TextSize = 0,
+        BackgroundTransparency = 1
+    }
+    
+    local frameTween = TweenService:Create(Frame, tweenInfo, frameGoals)
+    local textButtonTween = TweenService:Create(TextButton, tweenInfo, textButtonGoals)
+    
+    frameTween:Play()
+    textButtonTween:Play()
+    
+    frameTween.Completed:Connect(function()
+        wait(2)  -- Add a 2-second delay before destroying the GUI
+        ScreenGui:Destroy()  -- Completely remove the GUI from the screen
+    end)
+end
+
 local function sendNotification(message)
     local StarterGui = game:GetService("StarterGui")
     StarterGui:SetCore("SendNotification", {
@@ -78,9 +140,10 @@ local function runScripts()
     sendNotification("Auto Green Enabled & Auto Guard")
 end
 
--- Load script and then immediately remove the GUI
+-- Load script, then close GUI after a delay
 TextButton.MouseButton1Click:Connect(function()
-    runScripts() -- Run the scripts first
-    ScreenGui:Destroy() -- Immediately remove the GUI from the screen
+    runScripts() -- Run the main script immediately
+    closeGUI()   -- Then close the GUI with a 2-second delay
     print("Done Loading")
 end)
+
