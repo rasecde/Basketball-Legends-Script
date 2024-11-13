@@ -148,5 +148,3 @@ TextButton.MouseButton1Click:Connect(function()
     closeGUI()   -- Clear the screen after running the scripts
     print("Done Loading")
 end)
-
-
