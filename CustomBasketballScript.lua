@@ -112,10 +112,12 @@ end
 
 -- Function to handle the shooting action, both for key press and button click
 local function shoot()
+    print("Shoot button pressed") -- Debugging line
     local Player = Players.LocalPlayer
     local Bar = Player.PlayerGui:FindFirstChild("Visual") and Player.PlayerGui.Visual:FindFirstChild("Shooting") and Player.PlayerGui.Visual.Shooting:FindFirstChild("Bar")
     
     if Bar and Player.Character:FindFirstChild("Basketball") then
+        print("Basketball found and shooting logic triggered") -- Debugging line
         Bar:GetPropertyChangedSignal("Size"):Connect(function()
             if Bar.Size.Y.Scale > getgenv().config.Size then
                 Bar:TweenSize(UDim2.new(1, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Linear, getgenv().config.Time, true)
@@ -123,8 +125,11 @@ local function shoot()
                 Bar.Size = UDim2.new(1, 0, 1, 0)
             end
         end)
+    else
+        print("Bar or Basketball not found") -- Debugging line
     end
 end
+
 
 -- Modified runScripts function that includes key binding for 'V' and setting up the ShootButton
 local function runScripts()
